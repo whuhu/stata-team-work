@@ -1,0 +1,282 @@
+cd "C:\Users\13375\Documents\team work"
+
+//part1
+import excel "part1.xlsx", firstrow clear
+
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+replace `v' = subinstr(`v'," ","",.)
+} 
+
+
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+destring `v',replace force
+}
+
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+drop if `v' == .
+}
+
+gen output = foreignpaper*1.5 + (totalpaper-foreignpaper)
+
+save "part1.dta", replace
+
+sort type year
+
+gen scirate = scientist/totalteach
+
+by type : gen l1money = money[_n-1]
+
+by type: gen l1totalexpenditure = totalexpenditure[_n-1]
+
+drop if l1money == .
+
+gen expendrate =  (totalexpenditure-l1totalexpenditure)/totalexpenditure
+
+gen id = 0
+
+replace id = 1 if type == "211及省部共建"
+replace id = 2 if type == "其他本科高等"
+replace id = 3 if type == "高等专科"
+replace id = 4 if type == "部委院校"
+replace id = 5 if type == "教育部直属院校"
+replace id = 6 if type == "地方院校"
+replace id = 7 if type == "综合大学"
+replace id = 8 if type == "工科大学"
+replace id = 9 if type == "农林院校"
+replace id = 10 if type == "医药院校"
+replace id = 11 if type == "师范院校"
+
+
+xtset id year
+xi: xtreg output money l1money expendrate scirate i.year, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 1, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 2, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 3, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 4, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 5, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 6, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 7, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 8, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 9, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 10, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 11, fe
+outreg2 using result1.xlsx, excel dec(3) addtext(effects of different type, department, level)
+//回归后手动取出lmoney的系数成为新变量
+
+
+//part2
+import excel "part2.xlsx", firstrow
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+replace `v' = subinstr(`v'," ","",.)
+}
+ 
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+destring `v',replace force
+}
+
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+drop if `v' == . 
+}
+
+gen output = foreignpaper*1.5 + (totalpaper-foreignpaper)
+
+save "part2.dta", replace
+
+sort type year
+
+gen scirate = scientist/totalteach
+
+by type : gen l1money = money[_n-1]
+
+by type: gen l1totalexpenditure = totalexpenditure[_n-1]
+
+drop if l1money == .
+
+gen expendrate =  (totalexpenditure-l1totalexpenditure)/totalexpenditure
+
+gen id = 0
+
+replace id = 1 if type == "北京市"
+replace id = 2 if type == "天津市"
+replace id = 3 if type == "河北省"
+replace id = 4 if type == "山西省"
+replace id = 5 if type == "内蒙古自治区"
+replace id = 6 if type == "辽宁省"
+replace id = 7 if type == "吉林省"
+replace id = 8 if type == "黑龙江省"
+replace id = 9 if type == "上海市"
+replace id = 10 if type == "江苏省"
+replace id = 11 if type == "浙江省"
+replace id = 12 if type == "安徽省"
+replace id = 13 if type == "福建省"
+replace id = 14 if type == "江西省"
+replace id = 15 if type == "山东省"
+replace id = 16 if type == "河南省"
+replace id = 17 if type == "湖北省"
+replace id = 18 if type == "湖南省"
+replace id = 19 if type == "广东省"
+replace id = 20 if type == "广西壮族自治区"
+replace id = 21 if type == "海南省"
+replace id = 22 if type == "重庆市"
+replace id = 23 if type == "四川省"
+replace id = 24 if type == "贵州省"
+replace id = 25 if type == "云南省"
+replace id = 26 if type == "西藏自治区"
+replace id = 27 if type == "陕西省"
+replace id = 28 if type == "甘肃省"
+replace id = 29 if type == "青海省"
+replace id = 30 if type == "宁夏回族自治区"
+replace id = 31 if type == "新疆维吾尔自治区"
+
+xtset id year
+xi: xtreg output money l1money expendrate scirate i.year , fe 
+xi: xtreg output money l1money expendrate scirate i.year, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 1, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 2, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 3, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 4, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 5, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 6, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 7, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 8, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 9, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 10, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 11, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 12, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 13, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 14, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 15, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 16, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 17, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 18, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 19, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 20, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 21, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 22, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 23, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 24, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 25, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 26, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 27, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 28, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 29, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 30, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 31, fe
+outreg2 using result2.xlsx, excel dec(3) addtext(effects of different province)
+
+//part3
+import excel using "part3.xlsx", firstrow
+
+foreach v in  totalteach scientist totalexpenditure money totalpaper foreignpaper{
+replace `v' = subinstr(`v'," ","",.)
+destring `v',replace force
+drop if `v' == . 
+}
+ 
+gen output = foreignpaper*1.5 + (totalpaper-foreignpaper)
+
+save "part3.dta", replace
+
+sort type year
+
+gen scirate = scientist/totalteach
+
+by type : gen l1money = money[_n-1]
+
+by type: gen l1totalexpenditure = totalexpenditure[_n-1]
+
+drop if l1money == .
+
+gen expendrate =  (totalexpenditure-l1totalexpenditure)/totalexpenditure
+
+gen id = 0
+
+replace id = 1 if type == "中央办公厅"
+replace id = 2 if type == "国家民族事务委员会"
+replace id = 3 if type == "公安部"
+replace id = 4 if type == "工业和信息化部"
+replace id = 5 if type == "交通运输部"
+replace id = 6 if type == "教育部"
+replace id = 7 if type == "中国民用航空局"
+replace id = 8 if type == "中国地震局"
+replace id = 9 if type == "国家林业局"
+replace id = 10 if type == "国务院侨务办公室"
+replace id = 11 if type == "国家安全生产监督管理总局"
+replace id = 12 if type == "中国科学院"
+replace id = 13 if type == "总装备部"
+
+xtset id year
+xi: xtreg output money l1money expendrate scirate i.year , fe 
+xi: xtreg output money l1money expendrate scirate i.year if id == 1, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 2, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 3, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 4, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 5, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 6, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 7, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 8, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 9, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 10, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 11, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 12, fe
+xi: xtreg output money l1money expendrate scirate i.year if id == 13, fe
+outreg2 using result2.xlsx, excel dec(3) addtext(effects of different province)
+
+//graph1
+import excel part1p.xlsx, firstrow clear
+gen lglm = ln(lmoneyover)
+graph hbar lglm if id == 1|id == 2|id == 3|id == 4|id == 5|id == 6, /*
+*/ over(type, sort(1) descending) ytitle("科研经费转化率的自然对数") ///
+bar(1,fc(red) lsty(foreground)) title("不同水平高校的经费转化率对比") ///
+yscale(range(-3(1)2))
+graph export graph_manage.png, as(png) width(1280) height(720) replace
+
+//graph2
+gen lg = -1/lglm
+graph hbar lg if id == 7|id == 8|id == 9|id == 10|id == 11, /*
+*/ over(type,sort(1) descending) ytitle("科研经费转化率的自然对数的负倒数") ///
+bar(1,fc(blue)) title("不同专攻方向的高校的经费转化率对比") 
+graph export graph_class.png, as(png) width(1280) height(720) replace
+
+//graph3
+import excel part3p.xlsx, firstrow clear
+graph hbar lglm, over(type, sort(1) descending) ytitle("科研经费转化率") ///
+title("不同部门直属高校的科研经费转化率对比") bar(1,fc(purple))
+graph export graph_belong.png, as(png) width(1280) height(720) replace
+
+//map
+gen id_1 = "无"
+replace id_1 = "华北地区" if id == 1 | id == 2 | id == 3 | id == 4 | id == 5 
+replace id_1 = "东北地区" if id == 6 | id == 7 | id == 8 
+replace id_1 = "华东地区" if id == 9 | id == 10 | id == 11 ///
+| id == 12 | id == 13 | id == 14 | id == 15 
+replace id_1 = "华中地区" if id == 16 | id == 17 | id == 18
+replace id_1 = "华南地区" if id == 19 | id == 20 | id == 21
+replace id_1 = "西南地区" if id == 22 | id == 23 | id == 24 | id == 25 | id == 26 
+replace id_1 = "西北地区" if id == 27 | id == 28 | id == 29 | id == 30 | id == 31 
+
+foreach Y of numlist 2002(1)2008 2010(1)2013 2015(1)2017 {
+reg output money l1money expendrate scirate if id_1 == "华北地区" | year == `Y'
+outreg2 using result`Y'HB.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "东北地区" | year == `Y'
+outreg2 using result`Y'DB.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "华东地区" | year == `Y'
+outreg2 using result`Y'HD.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "华中地区" | year == `Y'
+outreg2 using result`Y'HZ.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "华南地区" | year == `Y'
+outreg2 using result`Y'HN.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "西南地区" | year == `Y'
+outreg2 using result`Y'XN.xlsx, excel dec(3)
+reg output money l1money expendrate scirate if id_1 == "西北地区" | year == `Y'
+outreg2 using result`Y'XB.xlsx, excel dec(3)
+}
+
+import excel using map.xlsx, firstrow clear
+foreach Y of numlist 2002(1)2008 2010(1)2013 2015(1)2017 {
+spmap lmoney`Y' using "china_map.dta", ///
+id(id) label(label(ename) xcoord(x_coord) ycoord(y_coord) size(*.66)) ///
+fc(Rainbow) clm(c) clb(-0.06 -0.04 -0.02 0(0.005)0.1 0.12 0.14 0.16) ///
+title("2002-2017年中国7大地理区域") subtitle("科研经费对科研产出的平均转化率")
+graph export graph_`Y'.png, as(png) width(1280) height(720) replace
+}
